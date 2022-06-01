@@ -161,22 +161,11 @@ nodes = {
     'facile_pl' : Node("Voici une vidéo pour commencer : https://www.youtube.com/watch?v=gjzMH7XTmg8" ,{}, exit=True),
     'moyen_pl' : Node("Voici une vidéo pour vous améliorer : https://www.youtube.com/watch?v=--vWDl-JaKU" ,{}, exit=True),
     'difficile_pl' : Node("Voici une vidéo pour vous expertiser : https://www.youtube.com/watch?v=EzccZqPZ9Tk" ,{}, exit=True),
-
-
-
-
-
-
-    
-
-    
-
 }
 
 @client.event
 async def on_message(message):
     
-    message.content = message.content.lower()
     Help_channel = client.get_channel(978634583346130944)
     if message.author == client.user:
         return
@@ -187,6 +176,55 @@ async def on_message(message):
         return lambda message: message.author == author
     
 
+    if message.content.startswith("$play"):
+
+        try:
+            voice_client = await message.author.voice.channel.connect()
+            voice_clients[voice_client.guild.id] = voice_client
+        except:
+            print("error")
+
+        try:
+            
+            url = message.content.split()[1]
+            print(url)
+            
+            loop = asyncio.get_event_loop()
+           
+            data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=False))
+            
+            song = data['url']
+            
+            player = discord.FFmpegPCMAudio(song, **ffmpeg_options, executable="C:\\ffmpeg\\bin\\ffmpeg.exe")
+            
+            voice_clients[message.guild.id].play(player)
+
+        except Exception as err:
+            print(err)
+
+
+    if message.content.startswith("$pause"):
+        try:
+            voice_clients[message.guild.id].pause()
+        except Exception as err:
+            print(err)
+
+    
+    if message.content.startswith("$resume"):
+        try:
+            voice_clients[message.guild.id].resume()
+        except Exception as err:
+            print(err)
+
+  
+    if message.content.startswith("$stop"):
+        try:
+            voice_clients[message.guild.id].stop()
+            await voice_clients[message.guild.id].disconnect()
+        except Exception as err:
+            print(err)
+    
+    message.content = message.content.lower()
     if message.channel == Help_channel and message.content.startswith('$flag'):
         score = 0
         round = 0
@@ -238,50 +276,11 @@ async def on_message(message):
     if message.channel == Help_channel and message.content.startswith('$admin'):
         await Help_channel.send("Bonjour <@&978639487498321971> quelqu'un a besoin d'aide")
 
-    if message.content.startswith("$play"):
+    
+    
+    await client.process_commands(message)
 
-        try:
-            voice_client = await message.author.voice.channel.connect()
-            voice_clients[voice_client.guild.id] = voice_client
-        except:
-            print("error")
-
-        try:
-            url = message.content.split()[1]
-
-            loop = asyncio.get_event_loop()
-            data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=False))
-
-            song = data['url']
-            player = discord.FFmpegPCMAudio(song, **ffmpeg_options, executable="C:\\ffmpeg\\bin\\ffmpeg.exe")
-
-            voice_clients[message.guild.id].play(player)
-
-        except Exception as err:
-            print(err)
-
-
-    if message.content.startswith("$pause"):
-        try:
-            voice_clients[message.guild.id].pause()
-        except Exception as err:
-            print(err)
-
-    # This resumes the current song playing if it's been paused
-    if message.content.startswith("$resume"):
-        try:
-            voice_clients[message.guild.id].resume()
-        except Exception as err:
-            print(err)
-
-    # This stops the current playing song
-    if message.content.startswith("$stop"):
-        try:
-            voice_clients[message.guild.id].stop()
-            await voice_clients[message.guild.id].disconnect()
-        except Exception as err:
-            print(err)
-
+@client.event
 async def on_member_join(member):
     Help_channel = client.get_channel(978634583346130944)
     guild = client.get_guild(978634543152136193)
@@ -291,18 +290,16 @@ async def on_member_join(member):
     await member.send(f'Bienvenue {member.name} sur le serveur {guild.name} où nous faisons nos test :face_with_hand_over_mouth:')
 
 
-async def on_message_delete(message):
-    print('test2')
-    client.delete_messages[message.guild.id] = (message.content, message.author, message.channel.name, message.created_at)
-
+@client.event
+async def on_message_delete(msg):
+    client.delete_messages[msg.guild.id] = (msg.content, msg.author, msg.channel.name, msg.created_at)
+    
 @client.command()
 async def delete(ctx):
     try:
-        print('test')
         contents, author, channel_name, time = client.delete_messages[ctx.guild.id]
         
     except:
-        print('raté')
         await ctx.channel.send("Aucun message supprimé de trouvé !")
         return
 
@@ -311,5 +308,6 @@ async def delete(ctx):
     embed.set_footer(text=f"sup dans : #{channel_name}")
 
     await ctx.channel.send(embed=embed)
+
 
 client.run("ODg5NTcyMTgwMDc2MTUwODA0.G8Vk2R.htMFKVYhFKpykSg3K5jvdTXGc7yryhrDRImShI")
