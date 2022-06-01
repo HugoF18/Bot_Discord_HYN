@@ -10,7 +10,7 @@ intents.members = True
 
 NodeId = str
 
-client = commands.Bot(command_prefix = "$", intents = intents)
+client = commands.Bot(command_prefix = "$", intents = intents, help_command=None)
 client.delete_messages = {}
 voice_clients = {}
 
