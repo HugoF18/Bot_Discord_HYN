@@ -1,12 +1,9 @@
 import discord 
 
-from discord.ext import commands 
 
-intents = discord.Intents.default()
-intents.typing = True
-intents.members = True
 
-client = commands.Bot(command_prefix="!", intents = intents)
+
+client = commands.Bot(command_prefix="$", intents = intents)
 
 @client.command()
 async def coucou(ctx):
@@ -25,15 +22,18 @@ async def on_message(message):
 
     Help_channel = client.get_channel(978634583346130944)
 
-    if message.channel == Help_channel and message.content.startswith('$h'):
+    if message.channel == Help_channel and message.content.startswith('$hello'):
         await Help_channel.send('Bonjour !')
+        
+    if message.channel == Help_channel and message.content.startswith('$commande'):
+        await Help_channel.send('`$h = bonjour / $del = supprime les 3 derniers messages / $modo = ping modo `')
 
-    if message.content == "del":
+    if message.content == "$del":
         await message.channel.purge(limit=3)
     
     if message.content.startswith("$dm"): 
         user = message.mentions[0]
-        strs = message.content.split(" ")
+        strs = message.content.split("")
         await user.send(strs[2:])
 
     await client.process_commands(message)

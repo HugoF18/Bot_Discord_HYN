@@ -1,11 +1,10 @@
 from typing import Tuple, Mapping, Callable, Optional, Any
 import discord
-from musique import * 
-import random
+
 
 client = discord.Client()
 NodeId = str
-aléa_rock = random.randint(1, len(rock))
+
 
 class Node:
 
@@ -76,7 +75,7 @@ nodes = {
     'css': Node("Voici un lien pour vous aidez : https://www.youtube.com/watch?v=_-KEFeWLVtY", {}, exit=True),
     'html': Node("Voici un lien pour vous aidez : https://www.youtube.com/watch?v=-PYadbLX40g", {}, exit=True),
     'sql': Node("Voici un lien pour vous aidez : https://www.youtube.com/watch?v=LT02Qz5btVs", {}, exit=True),
-    'rock':Node(rock[aléa_rock] ,{}, exit=True)
+    'rock':Node('rock en cours' ,{}, exit=True)
 }
 
 @client.event
