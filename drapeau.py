@@ -137,18 +137,40 @@ class Dialog:
             current_node = self.nodes[next_node_id]
 
 nodes = {
-    'start': Node("Comment puis-je vous aidez ?", {'tutoriel': 'tutoriel', 'musique': 'musique', 'documentation': 'documentation'}),
+    'start': Node("Comment puis-je vous aidez ?", {'tutoriel': 'tutoriel', 'musique': 'musique', 'langue': 'langue', 'exit' : 'exit'}),
     'tutoriel': Node("Sur quel langage avez vous besoin d'un tutoriel ?", {'python': 'python', 'javascript': 'javascript', 'php': 'php', 'css': 'css', 'html': 'html', 'sql': 'sql', 
-                                                                            'retour': 'start'}),
-    'musique': Node("Quel style musical voulez-vous ?", {'rock' : 'rock', 'retour': 'start'}),
-    'documentation': Node("Quel document avez vous besoin ?", {'retour': 'start'}),
+                                                                            'retour': 'start','exit' : 'exit' }),
+    'musique': Node("Quel style musical voulez-vous ?", {'rock' : 'rock', 'pop': 'pop','op anime' : 'op anime', 'metal' : 'metal', 'retour': 'start','exit' : 'exit'}),
+    'langue': Node("Quel langue avez vous besoin ?", {'japonais': 'japonais','polonais': 'polonais','retour': 'start','exit' : 'exit'}),
+    'japonais' : Node("Quelle niveau avait vous ? ", {'facile' : 'facile_jp','moyen' : 'moyen_jp','difficile' : 'difficile_jp','retour':'start','exit' : 'exit'}),
+    'polonais' : Node("Quelle niveau avait vous ? ", {'facile' : 'facile_pl','moyen' : 'moyen_pl','difficile' : 'difficile_pl','retour':'start','exit' : 'exit'}),
     'python': Node("Voici un lien pour vous aidez : https://www.youtube.com/watch?v=oUJolR5bX6g", {}, exit=True),
     'javascript': Node("Voici un lien pour vous aidez : https://www.youtube.com/watch?v=QB1DTl7HFnc", {}, exit=True),
     'php': Node("Voici un lien pour vous aidez : https://www.youtube.com/watch?v=FKdctsQ1v7U", {}, exit=True),
     'css': Node("Voici un lien pour vous aidez : https://www.youtube.com/watch?v=_-KEFeWLVtY", {}, exit=True),
     'html': Node("Voici un lien pour vous aidez : https://www.youtube.com/watch?v=-PYadbLX40g", {}, exit=True),
     'sql': Node("Voici un lien pour vous aidez : https://www.youtube.com/watch?v=LT02Qz5btVs", {}, exit=True),
-    'rock':Node('rock en cours' ,{}, exit=True)
+    'rock':Node("Voici une musique qui pourrait vous plaire : https://www.youtube.com/watch?v=-tJYN-eG1zk" ,{}, exit=True),
+    'pop' : Node("Voici une musique qui pourrait vous plaire : https://www.youtube.com/watch?v=QNJL6nfu__Q" ,{}, exit=True),
+    'op anime' : Node("Voici une musique qui pourrait vous plaire : https://www.youtube.com/watch?v=fodAJ-1dN3I" ,{}, exit=True),
+    'metal' : Node("Voici une musique qui pourrait vous plaire : https://www.youtube.com/watch?v=tAGnKpE4NCI" ,{}, exit=True),
+    'exit' : Node("J'espère que je vous ai bien aidé." ,{}, exit=True),
+    'facile_jp' : Node("Voici une vidéo pour commencer : https://www.youtube.com/watch?v=Hs8oR3xDokA" ,{}, exit=True),
+    'moyen_jp' : Node("Voici une vidéo pour vous améliorer : https://www.youtube.com/watch?v=dW27PVKF92Y" ,{}, exit=True),
+    'difficile_jp' : Node("Voici une vidéo pour vous expertiser :https://www.youtube.com/watch?v=yhsDvEfKqoQ" ,{}, exit=True),
+    'facile_pl' : Node("Voici une vidéo pour commencer : https://www.youtube.com/watch?v=gjzMH7XTmg8" ,{}, exit=True),
+    'moyen_pl' : Node("Voici une vidéo pour vous améliorer : https://www.youtube.com/watch?v=--vWDl-JaKU" ,{}, exit=True),
+    'difficile_pl' : Node("Voici une vidéo pour vous expertiser : https://www.youtube.com/watch?v=EzccZqPZ9Tk" ,{}, exit=True),
+
+
+
+
+
+
+    
+
+    
+
 }
 
 @client.event
@@ -158,6 +180,8 @@ async def on_message(message):
     Help_channel = client.get_channel(978634583346130944)
     if message.author == client.user:
         return
+    if message.channel == Help_channel and message.content.startswith('$commande'):
+        await Help_channel.send('`$flag = jeux des drapeaux / $hira = deviner les hiragana / $admin = ping admin / $help = trouve ce que tu veux / $delete = reprends le dernier message supprimé / $play = joue de la musique (lien youtube)`')
 
     def author_check(author):
         return lambda message: message.author == author
@@ -205,13 +229,13 @@ async def on_message(message):
         score_str = str(score)
         await Help_channel.send('Score = ' + score_str + '/3')
     
-    if message.content == '$aide':
+    if message.content == '$help':
        try:
            await Dialog(nodes, 'start').evaluate(message)
        except:
            pass
 
-    if message.channel == Help_channel and message.content.startswith('$modo'):
+    if message.channel == Help_channel and message.content.startswith('$admin'):
         await Help_channel.send("Bonjour <@&978639487498321971> quelqu'un a besoin d'aide")
 
     if message.content.startswith("$play"):
@@ -266,12 +290,6 @@ async def on_member_join(member):
     # Welcome DM Members
     await member.send(f'Bienvenue {member.name} sur le serveur {guild.name} où nous faisons nos test :face_with_hand_over_mouth:')
 
-'''    
-async def commande (member):
-    Help_channel = client.get_channel(978634583346130944)
-    if message.channel == Help_channel and message.content.startswith('$commande'):
-        guild = client.get_guild(978634543152136193)
-    await member.send(f'Bienvenue {member.name} sur le serveur {guild.name} où nous faisons nos test :face_with_hand_over_mouth:')'''
 
 async def on_message_delete(message):
     print('test2')
