@@ -26,7 +26,7 @@ dico_flag = {1: {'france': ':flag_fr:'},
             4 : {'italie': ':flag_it:'},
             5 : {'japon': ':flag_jp:'},
             6 : {'vietnam': ':flag_vn:'},
-            7 : {'seychelle': ':flag_sc:'},
+            7 : {'seychelles': ':flag_sc:'},
             8 : {'bosnie herzégovine': ':flag_ba:'},
             9 : {'madagascar': ':flag_mg:'},
             10 : {'corée du sud': ':flag_kr:'}
