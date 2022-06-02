@@ -310,4 +310,4 @@ async def delete(ctx):
     await ctx.channel.send(embed=embed)
 
 
-client.run("ODg5NTcyMTgwMDc2MTUwODA0.G8Vk2R.htMFKVYhFKpykSg3K5jvdTXGc7yryhrDRImShI")
+client.run("Votre token")
